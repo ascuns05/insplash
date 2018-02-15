@@ -1,13 +1,13 @@
-var appId = 'a971f7aec432915057c12fbd6cc3b0eeceb36bbf1aa2e5803640f63dd17c2a7c';
-// var appId = '5701b0e486ddba1908670f65038dbb2d64430eea5c7fed49c05c991129428042'
-var page = 1;
-var perPage = 10;
+// var appId = 'a971f7aec432915057c12fbd6cc3b0eeceb36bbf1aa2e5803640f63dd17c2a7c';
+var appId = '5701b0e486ddba1908670f65038dbb2d64430eea5c7fed49c05c991129428042'
+var page = 3;
+var perPage = 20;
 
 
 location.hash = page
 uploadPhotos(page);
 
-for (var i = 1; i < 10; i++) {
+for (var i = 1; i <= 20; i++) {
   var pagin = document.createElement('a');
   pagin.classList.add('pagin');
   pagin.innerHTML = i;
@@ -23,11 +23,10 @@ function onload() {
     $('.modal-section').fadeIn();
     $('.modal-section .content').css({
       "transform": "scale(1)"
-    })
-    // console.log();
-    
+    });
     modalSetImage($(this)[0]);
     setMaster($(this)[0]);
+    setDownloads($(this)[0]);
   });
 
   $('.modal-section .overlay').click(function () {
@@ -35,6 +34,21 @@ function onload() {
     "transform": "scale(.5)"
   });
   $('.modal-section').fadeOut();
+  });
+
+  
+  $('.modal-section .downloads .download').click(function () {
+    if ($('.modal-section .downloads .other-format').css('display') === 'none') {
+    $('.modal-section .downloads .other-format').fadeIn();
+    $('.modal-section .downloads .other-format').css({
+      'transform': 'scale(1)'
+    });
+    } else {
+      $('.modal-section .downloads .other-format').fadeOut();
+      $('.modal-section .downloads .other-format').css({
+        'transform': 'scale(.5)'
+      });
+    }
   });
 }
 
@@ -55,6 +69,8 @@ function setImage(el, data) {
   el.setAttribute('color', data.color);
   el.setAttribute('autor-avatar', data.user.profile_image.small);
   el.setAttribute('autor-name', data.user.name);
+  el.setAttribute('raw-download', data.urls.raw);
+  el.setAttribute('full-download', data.urls.full);
 }
 
 function modalSetImage(obj) {
@@ -75,11 +91,15 @@ function setMaster(obj) {
   $('.modal-section .content .autor-info .autor-name')[0].innerHTML = obj.getAttribute('autor-name');
 }
 
+function setDownloads(obj) {
+  $('.modal-section .downloads .other-format .raw')[0].setAttribute('href', obj.getAttribute('raw-download'));
+  $('.modal-section .downloads .other-format .full-size')[0].setAttribute('href', obj.getAttribute('full-download'));
+}
 
 
 
 
-// 
+// for spa
 
 window.onhashchange = function() {
   var currentPage = location.hash.slice(1);
@@ -98,8 +118,6 @@ function uploadPhotos(page) {
     setImage(col.querySelector('.card'), data[i])
     document.querySelector('.container').appendChild(col);
   }
-
-
   onload();
   });
 }
